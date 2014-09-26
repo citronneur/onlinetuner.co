@@ -11,8 +11,6 @@
 			alert("Not html5 browser compliant");
 			return;
 		}
-		
-		this.audioContext = this.createAudioContext();
 	};
 	
 	OnlineTuner.prototype = {
@@ -41,18 +39,6 @@
 		createAudioContext : function() {
 			var AudioContext = window.AudioContext || window.webkitAudioContext;
 			return new AudioContext();
-		},
-		
-		record : function() {
-			var self = this;
-			this.getUserMedia({audio : true}, function(stream) {
-				var analyser = self.audioContext.createAnalyser();
-				analyser.connect(self.audioContext.destination);
-				var input = self.audioContext.createMediaStreamSource(stream);
-				input.connect(analyser);
-			}, function(e) {
-				alert("Error : " + e);
-			});
 		}
 	};
 })();
