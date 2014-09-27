@@ -1,8 +1,29 @@
 <html>
 <head>
-<script type="text/javascript" src="../js/onlinetuner.js"></script>
-<script type="text/javascript" src="../js/recorder.js"></script>
+<script type="text/javascript" src="/js/onlinetuner.js"></script>
+<script type="text/javascript" src="/js/barchartview.js"></script>
+<script type="text/javascript">
+	function start() {
+		//create viewer
+		var barChartView = new OnlineTuner.BarChartView(OnlineTuner.$('barChartView'));
+		//install fft capture
+		OnlineTuner.install(function() {
+			setInterval(function() {
+				//requestAnimationFrame(update);
+				var frenquencies = OnlineTuner.getFrequencyData();
+				var max = Math.max.apply(null, frenquencies);
+				
+		        if(max > 10) {
+		            var idx = Array.prototype.indexOf.call(frenquencies, max);
+		            console.log('f = ', (idx * OnlineTuner.audioContext.sampleRate / frenquencies.length));
+		        }
+				barChartView.update(frenquencies);
+			}, 100);
+		});
+	}
+</script>
 </head>
-<body onload="new OnlineTuner.Tuner().start();">
+<body onload="start()">
+<canvas width="800" height="200" id="barChartView"></canvas>
 </body>
 </html>
