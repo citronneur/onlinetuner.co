@@ -8,7 +8,7 @@
 		this.analyser.fftsize = 2048;
 		this.analyser.connect(this.audioContext.destination);
 		this.filter = this.audioContext.createBiquadFilter();
-		this.filter.frequency = 400.0;
+		this.filter.frequency = 4000.0;
 		this.filter.type = this.filter.LOWPASS;
 		this.filter.Q = 0.1;
 		this.filter.connect(this.analyser);

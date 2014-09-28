@@ -11,6 +11,8 @@
 			alert("Not html5 browser compliant");
 			return;
 		}
+		
+		this.initUint8Array();
 	};
 	
 	OnlineTuner.prototype = {
@@ -21,6 +23,20 @@
 		
 		virtual : function() {
 			throw "call pure virtual function";
+		},
+		
+		initUint8Array : function() {
+			//Add max function
+			Uint8Array.prototype.max = function() {
+				Math.max.apply(null, this);
+			};
+			
+			//Add foreach function
+			Uint8Array.prototype.foreach = function(f) {
+				for(var i in this) {
+					f(this[i]);
+				}
+			};
 		},
 		
 		//Return getUserMedia function for

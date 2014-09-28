@@ -21,7 +21,7 @@
 				
 		        if(max > 10) {
 		            var idx = Array.prototype.indexOf.call(frenquencies, max);
-		            console.log('f = ', (idx * analyser.audioContext.sampleRate / frenquencies.length));
+		            console.log('f = ', (idx * analyser.audioContext.sampleRate / frenquencies.length / 2.0));
 		        }
 		        for(var id in views) {
 					views[id].update(frenquencies);

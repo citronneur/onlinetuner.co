@@ -3,7 +3,7 @@
 
 (function(){
 	
-	var FREQUENCIES = {"E1" : 329.6, "B" : 246.9, "G" : 196, "D" : 146.8, "A" : 110, "E2" : 82.4 };
+	var FREQUENCIES = {"e" : 329.6, "B" : 246.9, "G" : 196, "D" : 146.8, "A" : 110, "E" : 82.4 };
 	
 	var TunerView = function(canvas, sampleRate) {
 		OnlineTuner.View.call(this, canvas);
@@ -12,8 +12,9 @@
 	
 	TunerView.prototype = {
 		maxFrequency : function(array) {
-	        var idx = Array.prototype.indexOf.call(array, Math.max.apply(null, array));
-	        return (idx * this.sampleRate / array.length);
+	        var idx = Array.prototype.indexOf.call(array, array.max());
+	        //this compute frequency
+	        return (idx * this.sampleRate / array.length / 2.0);
 		},
 		
 		getNote : function(maxFrequency) {
@@ -22,7 +23,7 @@
 				diffFrequencies[i] = FREQUENCIES[i] - maxFrequency;
 			}
 			
-			var note = "E1";
+			var note = "e";
 			var min = Math.abs(diffFrequencies[note]);
 			for(var i in diffFrequencies) {
 				if(Math.abs(diffFrequencies[i]) < min) {
@@ -31,7 +32,7 @@
 				}
 			}
 			
-			console.log(note + " " + min + " " + maxFrequency);
+			console.log(note);
 		},
 		
 		// draw a particular array
