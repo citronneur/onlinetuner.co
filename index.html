@@ -1,29 +1,38 @@
 <html>
 <head>
 <script type="text/javascript" src="/js/onlinetuner.js"></script>
+<script type="text/javascript" src="/js/analyser.js"></script>
+<script type="text/javascript" src="/js/view.js"></script>
 <script type="text/javascript" src="/js/barchartview.js"></script>
+<script type="text/javascript" src="/js/tunerview.js"></script>
 <script type="text/javascript">
 	function start() {
-		//create viewer
-		var barChartView = new OnlineTuner.BarChartView(OnlineTuner.$('barChartView'));
 		//install fft capture
-		OnlineTuner.install(function() {
+		var analyser = new OnlineTuner.Analyser();
+		
+		//create viewer
+		var views = [ new OnlineTuner.BarChartView(OnlineTuner.$('barChartView')), new OnlineTuner.TunerView(OnlineTuner.$('tunerView'), analyser.audioContext.sampleRate) ];
+		
+		analyser.install(function() {
 			setInterval(function() {
 				//requestAnimationFrame(update);
-				var frenquencies = OnlineTuner.getFrequencyData();
+				var frenquencies = analyser.getData();
 				var max = Math.max.apply(null, frenquencies);
 				
 		        if(max > 10) {
 		            var idx = Array.prototype.indexOf.call(frenquencies, max);
-		            console.log('f = ', (idx * OnlineTuner.audioContext.sampleRate / frenquencies.length));
+		            console.log('f = ', (idx * analyser.audioContext.sampleRate / frenquencies.length));
 		        }
-				barChartView.update(frenquencies);
+		        for(var id in views) {
+					views[id].update(frenquencies);
+				}
 			}, 100);
 		});
 	}
 </script>
 </head>
 <body onload="start()">
-<canvas width="800" height="200" id="barChartView"></canvas>
+<canvas width="800" height="70" id="barChartView"></canvas>
+<canvas width="400" height="400" id="tunerView"></canvas>
 </body>
 </html>
