@@ -19,10 +19,11 @@
 				var frenquencies = analyser.getData();
 				var max = Math.max.apply(null, frenquencies);
 				
-		        if(max > 10) {
-		            var idx = Array.prototype.indexOf.call(frenquencies, max);
-		            console.log('f = ', (idx * analyser.audioContext.sampleRate / frenquencies.length / 2.0));
-		        }
+		        var idx = Array.prototype.indexOf.call(frenquencies, frenquencies.max());
+		        var frequency = (idx * analyser.audioContext.sampleRate / frenquencies.length / 2.0);
+		        console.log('f = ', frequency);
+		        console.log('n = ', OnlineTuner.getNoteFromFrequency(frequency));
+		      
 		        for(var id in views) {
 					views[id].update(frenquencies);
 				}
