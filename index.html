@@ -16,14 +16,9 @@
 		analyser.install(function() {
 			setInterval(function() {
 				//requestAnimationFrame(update);
-				var frenquencies = analyser.getData();
-				var max = Math.max.apply(null, frenquencies);
-				
-		        var idx = Array.prototype.indexOf.call(frenquencies, frenquencies.max());
-		        var frequency = (idx * analyser.audioContext.sampleRate / frenquencies.length / 2.0);
-		        console.log('f = ', frequency);
-		        console.log('n = ', OnlineTuner.getNoteFromFrequency(frequency));
-		      
+				var note = analyser.getInfo();
+		        console.log('f = ', note.frequency);
+		        
 		        for(var id in views) {
 					views[id].update(frenquencies);
 				}

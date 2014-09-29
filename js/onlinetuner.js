@@ -12,7 +12,7 @@
 			return;
 		}
 		
-		this.initUint8Array();
+		this.installUint8Array();
 	};
 	
 	OnlineTuner.prototype = {
@@ -25,7 +25,7 @@
 			throw "call pure virtual function";
 		},
 		
-		initUint8Array : function() {
+		installUint8Array : function() {
 			//Add max function
 			Uint8Array.prototype.max = function() {
 				return Math.max.apply(null, this);
@@ -36,6 +36,11 @@
 				for(var i in this) {
 					f(this[i]);
 				}
+			};
+			
+			//Add indexof function
+			Uint8Array.prototype.indexof = function(value) {
+				return Array.prototype.indexOf.call(this, value);
 			};
 		},
 		
@@ -64,18 +69,6 @@
 		createAudioContext : function() {
 			var AudioContext = window.AudioContext || window.webkitAudioContext;
 			return new AudioContext();
-		},
-		
-		//Return nb half step from A4 note
-		getStepFromFrequency : function(frequency) {
-			return 12 * Math.log2(frequency / 440.0);
-		},
-		
-		getNoteFromFrequency : function(frequency) {
-			var note = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
-			
-			var n = Math.round(this.getStepFromFrequency(frequency));
-			return note[12 - (n % 12)] + "" + (4 + Math.round(n / 12));
 		}
 	};
 })();
