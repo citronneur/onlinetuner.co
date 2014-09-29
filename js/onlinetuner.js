@@ -42,6 +42,11 @@
 			Uint8Array.prototype.indexof = function(value) {
 				return Array.prototype.indexOf.call(this, value);
 			};
+			
+			//Slice array
+			Uint8Array.prototype.slice = function(start, count) {
+				return Array.prototype.slice.call(this, start, count);
+			};
 		},
 		
 		//Return getUserMedia function for

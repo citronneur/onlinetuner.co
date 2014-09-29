@@ -2,13 +2,16 @@
 //Use web audio api to produce analyse data
 
 (function(){
-	var Analyser = function() {
+	var Analyser = function(highFrequency) {
+		//height octave on 8000.0 hz
+		this.highFrequency = highFrequency || 8000.0;
+		
 		this.audioContext = OnlineTuner.createAudioContext();
 		this.analyser = this.audioContext.createAnalyser();
 		this.analyser.fftsize = 2048;
 		this.analyser.connect(this.audioContext.destination);
 		this.filter = this.audioContext.createBiquadFilter();
-		this.filter.frequency = 400.0;
+		this.filter.frequency = this.highFrequency;
 		this.filter.type = this.filter.LOWPASS;
 		this.filter.Q = 0.1;
 		this.filter.connect(this.analyser);
@@ -35,9 +38,18 @@
 				});
 			},
 			
+			//update fft with current values
+			update : function() {
+				this.analyser.getByteFrequencyData(this.dataArray);
+			},
+			
+			//return deltaHz between two frequencies
+			getDeltaHZ : function() {
+				return this.audioContext.sampleRate / this.analyser.fftSize;
+			},
+			
 			//Return FFT of input signal
 			getData : function() {
-				this.analyser.getByteFrequencyData(this.dataArray);
 				return this.dataArray;
 			},
 			
@@ -50,16 +62,17 @@
 			//step represent half step from A4 (la 440Hz)
 			getNote : function(step) {
 				var note = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
-				if(n < 0)
-					return note[12 + (n % 12)];
+				var idx = Math.round(step) % note.length;
+				if(idx < 0)
+					return note[12 + idx];
 				else
-					return note[n % 12];
+					return note[idx];
 			},
 			
 			//Compute octave from step
 			//step represent half step from A4 (la 440Hz)
 			getOctave : function(step) {
-				return Math.abs(Math.round(step / 12)) + 4;
+				return Math.round(step / 12) + 4;
 			},
 			
 			getInfo : function() {
@@ -67,7 +80,7 @@
 				var frequencies = this.getData();
 				
 				//Max frequency
-		        var frequency = (frequencies.indexof(frenquencies.max()) * analyser.audioContext.sampleRate / frequencies.length / 2.0);
+		        var frequency = (frequencies.indexof(frequencies.max()) * this.getDeltaHZ());
 		        
 		        //step from A4 (La 440hz)
 		        var step = this.getStep(frequency);

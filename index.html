@@ -8,19 +8,21 @@
 <script type="text/javascript">
 	function start() {
 		//install fft capture
-		var analyser = new OnlineTuner.Analyser();
+		//350.0 hz for guitare (mi)
+		var analyser = new OnlineTuner.Analyser(350.0);
 		
 		//create viewer
-		var views = [ new OnlineTuner.BarChartView(OnlineTuner.$('barChartView')), new OnlineTuner.TunerView(OnlineTuner.$('tunerView'), analyser.audioContext.sampleRate) ];
+		var views = [ new OnlineTuner.BarChartView(OnlineTuner.$('barChartView'), analyser), new OnlineTuner.TunerView(OnlineTuner.$('tunerView'), analyser) ];
 		
 		analyser.install(function() {
 			setInterval(function() {
 				//requestAnimationFrame(update);
+				analyser.update();
 				var note = analyser.getInfo();
-		        console.log('f = ', note.frequency);
+		        console.log('f = ' + note.frequency + ' note = ' + note.note + ' octave = ' + note.octave + ' step = ' + note.step);
 		        
 		        for(var id in views) {
-					views[id].update(frenquencies);
+					views[id].update();
 				}
 			}, 100);
 		});
