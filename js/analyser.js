@@ -53,15 +53,15 @@
 				return this.dataArray;
 			},
 			
-			//Return nb half step from A4 note
+			//Return nb half step from C1 note
 			getStep : function(frequency) {
-				return 12 * Math.log2(frequency / 440.0);
+				return 12 * Math.log2(frequency / 32.70);
 			},
 			
 			//Compute Note from step
-			//step represent half step from A4 (la 440Hz)
+			//step represent half step from C1 (do 32.70Hz)
 			getNote : function(step) {
-				var note = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
+				var note = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 				var idx = Math.round(step) % note.length;
 				if(idx < 0)
 					return note[12 + idx];
@@ -70,9 +70,9 @@
 			},
 			
 			//Compute octave from step
-			//step represent half step from A4 (la 440Hz)
+			//step represent half step from C1 (do 32.7Hz)
 			getOctave : function(step) {
-				return Math.round(step / 12) + 4;
+				return Math.floor(step / 12);
 			},
 			
 			getInfo : function() {
@@ -82,7 +82,9 @@
 				//Max frequency
 		        var frequency = (frequencies.indexof(frequencies.max()) * this.getDeltaHZ());
 		        
-		        //step from A4 (La 440hz)
+		        if(frequency == 0)
+		        	return {frequency : 32.7, step : 0, note : "C", octave : 0};
+		        //step from C1 (Do 32.7hz)
 		        var step = this.getStep(frequency);
 		        
 		        //Note and octave from step

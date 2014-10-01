@@ -3,11 +3,7 @@
 (function () {
 	
 	//system
-	var View = function(canvas, analyser) {
-		//target of drawing
-		this.canvas = canvas;
-		this.canvasCtx = this.canvas.getContext("2d");
-		
+	var View = function(analyser) {		
 		//Music analyser
 		this.analyser = analyser;
 	};

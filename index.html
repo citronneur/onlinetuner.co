@@ -4,15 +4,15 @@
 <script type="text/javascript" src="/js/analyser.js"></script>
 <script type="text/javascript" src="/js/view.js"></script>
 <script type="text/javascript" src="/js/barchartview.js"></script>
-<script type="text/javascript" src="/js/tunerview.js"></script>
+<script type="text/javascript" src="/js/noteview.js"></script>
 <script type="text/javascript">
 	function start() {
 		//install fft capture
 		//350.0 hz for guitare (mi)
-		var analyser = new OnlineTuner.Analyser(350.0);
+		var analyser = new OnlineTuner.Analyser(800.0);
 		
 		//create viewer
-		var views = [ new OnlineTuner.BarChartView(OnlineTuner.$('barChartView'), analyser), new OnlineTuner.TunerView(OnlineTuner.$('tunerView'), analyser) ];
+		var views = [ new OnlineTuner.BarChartView(OnlineTuner.$('barChartView'), analyser), new OnlineTuner.NoteView(OnlineTuner.$('noteView'), analyser) ];
 		
 		analyser.install(function() {
 			setInterval(function() {
@@ -31,6 +31,7 @@
 </head>
 <body onload="start()">
 <canvas width="800" height="70" id="barChartView"></canvas>
-<canvas width="400" height="400" id="tunerView"></canvas>
+<!--canvas width="400" height="400" id="tunerView"></canvas-->
+<p id="noteView"></p>
 </body>
 </html>
