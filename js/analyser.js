@@ -3,6 +3,7 @@
 
 (function(){
 	var Analyser = function(highFrequency) {
+		
 		//height octave on 8000.0 hz
 		this.highFrequency = highFrequency || 8000.0;
 		
