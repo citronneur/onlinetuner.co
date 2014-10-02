@@ -34,17 +34,39 @@
 	};
 	
 	CircleWidget.prototype = {
-			show : function(text, delta) {
+			show : function(text, resume, delta) {
+				//backgroud
 				this.ctx.fillStyle = 'rgb(255, 255, 255)';
 				this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+				
+				//color arc
+				this.ctx.beginPath();
+				this.ctx.moveTo(this.canvas.width / 2, this.canvas.height / 2);
+				this.ctx.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.width / 2, - Math.PI / 2.0, - Math.PI / 2.0 + delta * Math.PI, delta <= 0);
+				this.ctx.lineTo(this.canvas.width / 2, this.canvas.height / 2);
+				this.ctx.fillStyle = "#D32A2A";
+				this.ctx.fill();
+				this.ctx.closePath();
+				
+				//print arc
+				this.ctx.beginPath();
+				this.ctx.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.width / 2 - 40, 0, 2*Math.PI);
+				this.ctx.fillStyle = "#FFFFFF";
+				this.ctx.fill();
+				this.ctx.closePath();
+				
+				//inner text
 				this.ctx.font = '70pt Arial';
 				this.ctx.textAlign = 'center';
 				this.ctx.fillStyle = 'blue';
 				this.ctx.fillText(text, this.canvas.width / 2, this.canvas.height / 2 + 35);
 				
-				this.ctx.beginPath();
-				this.ctx.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.width / 2, 0, 2*Math.PI);
-				this.ctx.stroke();
+				//inner text
+				this.ctx.font = '20pt Arial';
+				this.ctx.textAlign = 'center';
+				this.ctx.fillStyle = 'blue';
+				this.ctx.fillText(resume, this.canvas.width / 2, this.canvas.height / 2 + 80);
+			
 			}
 	};
 	

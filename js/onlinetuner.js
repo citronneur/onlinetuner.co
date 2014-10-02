@@ -13,6 +13,7 @@
 		}
 		
 		this.installUint8Array();
+		this.installArray();
 	};
 	
 	OnlineTuner.prototype = {
@@ -31,13 +32,6 @@
 				return Math.max.apply(null, this);
 			};
 			
-			//Add foreach function
-			Uint8Array.prototype.foreach = function(f) {
-				for(var i in this) {
-					f(this[i]);
-				}
-			};
-			
 			//Add indexof function
 			Uint8Array.prototype.indexof = function(value) {
 				return Array.prototype.indexOf.call(this, value);
@@ -46,6 +40,17 @@
 			//Slice array
 			Uint8Array.prototype.slice = function(start, count) {
 				return Array.prototype.slice.call(this, start, count);
+			};
+		},
+		
+		installArray : function() {
+			//Add foreach function
+			Array.prototype.map = function(f) {
+				var map = new Array(this.length);
+				for(var i in this) {
+					map[i] = f(this[i]);
+				};
+				return map;
 			};
 		},
 		

@@ -2,7 +2,7 @@
 <head>
 <script type="text/javascript" src="/js/onlinetuner.js"></script>
 <script type="text/javascript" src="/js/analyser.js"></script>
-<script type="text/javascript" src="/js/view.js"></script>
+<script type="text/javascript" src="/js/controller.js"></script>
 <script type="text/javascript" src="/js/widget.js"></script>
 <script type="text/javascript">
 	function start() {
@@ -14,8 +14,8 @@
 		
 		//create viewer
 		var views = [ 
-			new OnlineTuner.BarChartView(new OnlineTuner.BarChartWidget(OnlineTuner.$('barChartView')), analyser), 
-			new OnlineTuner.GuitareTunerView(new OnlineTuner.CircleWidget(OnlineTuner.$('tunerView')), analyser)
+			new OnlineTuner.Controller.BarChart(new OnlineTuner.BarChartWidget(OnlineTuner.$('barChartView')), analyser), 
+			new OnlineTuner.Controller.GuitareTuner(new OnlineTuner.CircleWidget(OnlineTuner.$('tunerView')), analyser)
 		];
 		
 		analyser.install(function() {
