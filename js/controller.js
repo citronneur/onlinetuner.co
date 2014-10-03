@@ -32,7 +32,7 @@
 			
 			var index = diff.indexOf(Math.min.apply(null, diff));
 			
-			this.widget.show(GUITARE_NOTE[index], info.note + "" + info.octave + "(" + info.frenquency + "Hz)",GUITARE_STEP[index] - info.step);
+			this.widget.show(GUITARE_NOTE[index], info.note + "" + info.octave + "(" + Math.round(info.frequency) + "Hz)",(info.step - GUITARE_STEP[index]) / 2.5);
 		}
 	};
 	
