@@ -23,16 +23,25 @@
 	GuitareTuner.prototype = {
 		// draw a particular array
 		update : function() {
-			var info = this.analyser.getInfo();
+			//step of quitare note
 			var GUITARE_STEP = [17, 22, 27, 32, 36, 41];
 			var GUITARE_NOTE = ["E", "A", "D", "G", "B", "E"];
+			
+			//analyser informations
+			var info = this.analyser.getInfo();
+			
+			//search nearest note
 			var diff = GUITARE_STEP.map(function(e) {
 				return Math.abs(e - info.step);
 			});
-			
 			var index = diff.indexOf(Math.min.apply(null, diff));
 			
-			this.widget.show(GUITARE_NOTE[index], info.note + "" + info.octave + "(" + info.frenquency + "Hz)",GUITARE_STEP[index] - info.step);
+			//compute error
+			var delta = GUITARE_STEP[index] - info.step;
+			if(Math.abs(delta - this.analyser.getStepError(info.frequency)) < 0) {
+				delta = 0;
+			}
+			this.widget.show(GUITARE_NOTE[index], info.note + "" + info.octave + "(" + info.frenquency + "Hz)", delta);
 		}
 	};
 	

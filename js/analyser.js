@@ -76,6 +76,11 @@
 				return Math.floor(step / 12);
 			},
 			
+			//Return error of measurement in step
+			getStepError : function(frequency) {
+				return this.getStep(frequency + this.getDeltaHZ()) - this.getStep(frequency);
+			},
+			
 			getInfo : function() {
 				//frequencies computed by FFT
 				var frequencies = this.getData();
