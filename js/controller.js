@@ -35,13 +35,12 @@
 				return Math.abs(e - info.step);
 			});
 			var index = diff.indexOf(Math.min.apply(null, diff));
-			
 			//compute error
 			var delta = GUITARE_STEP[index] - info.step;
 			if(Math.abs(delta - this.analyser.getStepError(info.frequency)) < 0) {
 				delta = 0;
 			}
-			this.widget.show(GUITARE_NOTE[index], info.note + "" + info.octave + "(" + info.frenquency + "Hz)", delta);
+			this.widget.show(GUITARE_NOTE[index], info.note + "" + info.octave + "(" + Math.round(info.frequency) + "Hz)",(info.step - GUITARE_STEP[index]) / 2.5);
 		}
 	};
 	

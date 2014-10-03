@@ -14,8 +14,11 @@
 		this.filter = this.audioContext.createBiquadFilter();
 		this.filter.frequency = this.highFrequency;
 		this.filter.type = this.filter.LOWPASS;
-		this.filter.Q = 0.1;
+		this.filter.Q.value = 0.1;
 		this.filter.connect(this.analyser);
+		
+		this.delay = this.audioContext.createDelay(5.0);
+		this.delay.connect(this.filter);
 		
 		this.input = null;
 		this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
@@ -30,7 +33,7 @@
 				OnlineTuner.getUserMedia({audio : true}, function(stream) {
 					
 					self.input = self.audioContext.createMediaStreamSource(stream);
-					self.input.connect(self.filter);
+					self.input.connect(self.delay);
 					//ready
 					onReady();
 					
