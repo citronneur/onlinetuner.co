@@ -12,8 +12,8 @@
 			return;
 		}
 		
-		this.installUint8Array();
 		this.installArray();
+		this.installFloat32Array();
 	};
 	
 	OnlineTuner.prototype = {
@@ -26,19 +26,19 @@
 			throw "call pure virtual function";
 		},
 		
-		installUint8Array : function() {
+		installFloat32Array : function() {
 			//Add max function
-			Uint8Array.prototype.max = function() {
+			Float32Array.prototype.max = function() {
 				return Math.max.apply(null, this);
 			};
 			
 			//Add indexof function
-			Uint8Array.prototype.indexof = function(value) {
+			Float32Array.prototype.indexof = function(value) {
 				return Array.prototype.indexOf.call(this, value);
 			};
 			
 			//Slice array
-			Uint8Array.prototype.slice = function(start, count) {
+			Float32Array.prototype.slice = function(start, count) {
 				return Array.prototype.slice.call(this, start, count);
 			};
 		},

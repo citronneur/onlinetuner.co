@@ -3,9 +3,7 @@
 (function () {
 	
 	//View
-	var Controller = function(analyser) {		
-		//Music analyser
-		this.analyser = analyser;
+	var Controller = function() {		
 	};
 	
 	//interface
@@ -14,21 +12,21 @@
 	};
 	
 	//Guitare tuner view
-	var GuitareTuner = function(widget, analyser) {
-		Controller.call(this, analyser);
+	var GuitareTuner = function(widget) {
+		Controller.call(this);
 		//target of drawing
 		this.widget = widget;
 	};
 	
 	GuitareTuner.prototype = {
 		// draw a particular array
-		update : function() {
+		update : function(analyser) {
 			//step of quitare note
-			var GUITARE_STEP = [17, 22, 27, 32, 36, 41];
+			var GUITARE_STEP = [-29, -24, -19, -14, -10, -5];
 			var GUITARE_NOTE = ["E", "A", "D", "G", "B", "E"];
 			
 			//analyser informations
-			var info = this.analyser.getInfo();
+			var info = analyser.getInfo();
 			
 			//search nearest note
 			var diff = GUITARE_STEP.map(function(e) {
@@ -37,25 +35,28 @@
 			var index = diff.indexOf(Math.min.apply(null, diff));
 			//compute error
 			var delta = GUITARE_STEP[index] - info.step;
-			if(Math.abs(delta - this.analyser.getStepError(info.frequency)) < 0) {
+			if(Math.abs(delta) - analyser.getStepError(info.frequency) < 0) {
+				console.log(analyser.getStepError(info.frequency) + " " + delta);
 				delta = 0;
 			}
-			this.widget.show(GUITARE_NOTE[index], info.note + "" + info.octave + "(" + Math.round(info.frequency) + "Hz)",(info.step - GUITARE_STEP[index]) / 2.5);
+			this.widget.show(GUITARE_NOTE[index], info.note + "" + info.octave + "(" + Math.round(info.frequency) + "Hz)",(delta) / 5.0);
 		}
 	};
 	
 	//BarChartView
 	//Frequency chart view
-	var BarChartController = function(widget, analyser) {
-		Controller.call(this, analyser);
+	var BarChartController = function(widget, maxFrequency) {
+		Controller.call(this);
 		//target of drawing
 		this.widget = widget;
+		//maxFrequency to show
+		this.maxFrequency = maxFrequency;
 	};
 	
 	BarChartController.prototype = {
 		// draw a particular array
-		update : function() {
-			var array = this.analyser.getData().slice(0, this.analyser.highFrequency / this.analyser.getDeltaHZ());
+		update : function(analyser) {
+			var array = analyser.getData().slice(0, this.maxFrequency / analyser.getDeltaHZ());
 			this.widget.show(array);
 		}
 	};

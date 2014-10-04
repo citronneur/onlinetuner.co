@@ -7,27 +7,19 @@
 <script type="text/javascript" src="/js/fft.js"></script>
 <script type="text/javascript">
 	function start() {
-	
-	
-		//install fft capture
-		//800 Hz for guitare
-		var analyser = new OnlineTuner.Analyser(800.0);
-		
+
 		//create viewer
 		var views = [ 
-			new OnlineTuner.Controller.BarChart(new OnlineTuner.BarChartWidget(OnlineTuner.$('barChartView')), analyser), 
-			new OnlineTuner.Controller.GuitareTuner(new OnlineTuner.CircleWidget(OnlineTuner.$('tunerView')), analyser)
+			new OnlineTuner.Controller.BarChart(new OnlineTuner.BarChartWidget(OnlineTuner.$('barChartView')), 400.0), 
+			new OnlineTuner.Controller.GuitareTuner(new OnlineTuner.CircleWidget(OnlineTuner.$('tunerView')))
 		];
 		
-		analyser.install(function() {
-			setInterval(function() {
-				//requestAnimationFrame(update);
-				analyser.update();
+		//install fft capture
+		//800 Hz for guitare
+		var analyser = new OnlineTuner.Analyser(views);
 		
-		        for(var id in views) {
-					views[id].update();
-				}
-			}, 100);
+		analyser.install(function() {
+			console.log("let's go");
 		});
 	}
 </script>
