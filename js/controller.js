@@ -51,7 +51,9 @@
 			var diff = GUITARE_STEP.map(function(e) {
 				return Math.abs(e - info.step);
 			});
+			
 			var index = diff.indexOf(Math.min.apply(null, diff));
+			
 			//compute error
 			var delta = GUITARE_STEP[index] - info.step;
 			if(Math.abs(delta) - analyser.getStepError(info.frequency) < 0) {
