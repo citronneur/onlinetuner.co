@@ -1,22 +1,50 @@
+//
+// Copyright (c) 2014 Sylvain Peyrefitte
+//
+// This file is part of onlinetuner.co.
+//
+// onlinetuner.co is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+
 //analyser.js
 //Use web audio api to produce analyse data
 
 (function(){
 	
-	var Analyser = function(views, precision) {
-		this.precision = precision || 16384;
+	var Analyser = function(controllers, highFrequency, precision) {
+		//max frequency to analyse
+		this.highFrequency = highFrequency || 350.0;
+		
+		//precision of computation
+		this.precision = precision || (4 * 16384);
 		
 		//analyser views
-		this.views = views;
+		this.controllers = controllers;
 		
 		//create audio context
 		this.audioContext = OnlineTuner.createAudioContext();
+		
+		//turn buffer
+		this.inputStream = new Float32Array(this.precision);
 		
 		//create fft object
 		this.fft = new OnlineTuner.FFT(this.precision, this.audioContext.sampleRate);
 		
 		//test
-		this.scriptNode = this.audioContext.createScriptProcessor(this.precision, 1, 1);
+		this.scriptNode = this.audioContext.createScriptProcessor(Math.min(this.precision, 16384), 1, 1);
+		
+		//loop
 		var self = this;
 		this.scriptNode.onaudioprocess = function(audioProcessingEvent) {
 			// The input buffer is the song we loaded earlier
@@ -29,13 +57,14 @@
 		//input node
 		this.input = null;
 		
-		//init window
-		this.window = hammingWindow(this.precision);
+		//init window for sound analyse
+		this.window = blackmanWindow(this.precision);
 		
 		//last note
-		this.contextNote = {frequency : 440.0, step : 0, note : "C", octave : 0};
+		this.contextNote = {frequency : 440.0, step : 0, note : "A", octave : 4};
 	};
 	
+	//init window with blackman algorithm
 	var blackmanWindow = function(size) {
 		var window = new Float32Array(size);
 		for(var i = 0; i < window.length; i++) {
@@ -45,6 +74,7 @@
 		return window;
 	};
 	
+	//init window with hamming algorithm
 	var hammingWindow = function(size) {
 		var window = new Float32Array(size);
 		for(var i = 0; i < window.length; i++) {
@@ -74,20 +104,33 @@
 
 			//update fft with current values
 			update : function(inputData) {
+				//buffer turn
+				this.inputStream.set(this.inputStream.subarray(this.precision));
+				this.inputStream.set(inputData, this.inputStream.length - inputData.length);
+				
+				//normalize
+				var max = this.inputStream.max();
+				if (max > 0) {
+					this.inputStream.select(function(e) {
+						return e/max;
+					});
+				}
+				
 				//apply window
 				for(var i = 0; i < inputData.length; i++) {
-					inputData[i] *= 10000 * this.window[i];
+					this.inputStream[i] *= this.window[i];
 				}
 				
 				//compute fft
-				this.fft.forward(inputData);
+				this.fft.forward(this.inputStream);
 				
-			    for(var id in this.views) {
-					this.views[id].update(this);
+				//update view
+			    for(var i = 0; i < this.controllers.length; i++) {
+					this.controllers[i].notify(this);
 				}
 			},
 			
-			//return deltaHz between two frequencies
+			//return error
 			getDeltaHZ : function() {
 				return this.audioContext.sampleRate / this.precision;
 			},
@@ -116,7 +159,7 @@
 			//Compute octave from step
 			//step represent half step from A4 (la 440Hz)
 			getOctave : function(step) {
-				return Math.floor(step / 12);
+				return Math.floor((step - 2) / 12) + 4;
 			},
 			
 			//Return error of measurement in step
@@ -126,7 +169,7 @@
 			
 			getInfo : function() {
 				//frequencies computed by FFT
-				var frequencies = this.getData();
+				var frequencies = this.getData().subarray(0, this.highFrequency / this.getDeltaHZ());
 				
 				//Max frequency
 		        var frequency = (frequencies.indexof(frequencies.max()) * this.getDeltaHZ());

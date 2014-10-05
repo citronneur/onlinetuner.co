@@ -1,3 +1,22 @@
+//
+// Copyright (c) 2014 Sylvain Peyrefitte
+//
+// This file is part of onlinetuner.co.
+//
+// onlinetuner.co is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+
 //controller.js
 //Interface between analyser and widgets
 (function () {
@@ -8,7 +27,7 @@
 	
 	//interface
 	Controller.prototype = {
-		update : OnlineTuner.virtual
+		notify : OnlineTuner.virtual
 	};
 	
 	//Guitare tuner view
@@ -20,7 +39,7 @@
 	
 	GuitareTuner.prototype = {
 		// draw a particular array
-		update : function(analyser) {
+		notify : function(analyser) {
 			//step of quitare note
 			var GUITARE_STEP = [-29, -24, -19, -14, -10, -5];
 			var GUITARE_NOTE = ["E", "A", "D", "G", "B", "E"];
@@ -39,7 +58,7 @@
 				console.log(analyser.getStepError(info.frequency) + " " + delta);
 				delta = 0;
 			}
-			this.widget.show(GUITARE_NOTE[index], info.note + "" + info.octave + "(" + Math.round(info.frequency) + "Hz)",(delta) / 5.0);
+			this.widget.show(- (delta) / 5.0, GUITARE_NOTE[index], "string " + (6 - index), info.note + "" + info.octave + "(" + Math.round(info.frequency) + "Hz)");
 		}
 	};
 	
@@ -55,7 +74,7 @@
 	
 	BarChartController.prototype = {
 		// draw a particular array
-		update : function(analyser) {
+		notify : function(analyser) {
 			var array = analyser.getData().slice(0, this.maxFrequency / analyser.getDeltaHZ());
 			this.widget.show(array);
 		}
