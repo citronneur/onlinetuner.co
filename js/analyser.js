@@ -45,6 +45,16 @@
 		return window;
 	};
 	
+	//frequency factor to diminuate effect of high frequency
+	var contribution = function(size, e33hz) {
+		var contribution = new Float32Array(size);
+		for(var i = 0; i < contribution.length; i++) {
+			contribution[i] = Math.exp(i / e33hz);
+		}
+		
+		return contribution;
+	};
+	
 	//compute step from frequency
 	//step is the between La 440Hz (A4)
 	var computeStep = function(frequency) {
@@ -102,6 +112,9 @@
 		
 		//init window for sound analyse
 		this.window = blackmanWindow(this.precision);
+		
+		//frequency factor
+		this.contribution = contribution(this.precision, this.highFrequency / this.getError());
 	};
 	
 	Analyser.prototype = {
@@ -150,6 +163,11 @@
 				
 				//compute fft
 				this.fft.forward(this.inputStream);
+				
+				//apply frequency contribution
+				for(var i = 0; i < this.fft.spectrum.length; i++) {
+					this.fft.spectrum[i] *= this.contribution[i];
+				}
 				
 				//update view
 			    for(var i = 0; i < this.controllers.length; i++) {
