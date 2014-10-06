@@ -25,12 +25,6 @@
 	OnlineTuner = function() {
 		this.VERSION = "1.0";
 		
-		//init audio context
-		if(!this.isHtml5Compatible()) {
-			alert("Not html5 browser compliant");
-			return;
-		}
-		
 		this.installArray();
 		this.installFloat32Array();
 	};

@@ -108,6 +108,13 @@
 			// Init tree analyser
 			// onReady is the ready callback
 			install : function(onReady, onError) {
+				
+				//init audio context
+				if(!OnlineTuner.isHtml5Compatible()) {
+					onError("Not html5 browser compliant");
+					return;
+				}
+				
 				var self = this;
 				
 				OnlineTuner.getUserMedia({audio : true}, function(stream) {

@@ -25,7 +25,7 @@
 
 		//create viewer
 		var views = [ 
-			new OnlineTuner.Controller.GuitareTuner(new OnlineTuner.Widget.CircleWidget(OnlineTuner.$('tunerView'), '#ffffff', '#2c3e50', '#79B269', '#2c3e50'))
+			new OnlineTuner.Controller.GuitareTuner(new OnlineTuner.Widget.CircleWidget(OnlineTuner.$('tunerView'), '#ffffff', '#2c3e50', '#18bc9c', '#2c3e50'))
 		];
 		
 		//install fft capture
@@ -35,7 +35,8 @@
 		analyser.install(function() {
 			console.log("let's go");
 		}, function(e) {
-			console.log("e");
+			OnlineTuner.$('error').style.display = 'inline';
+			OnlineTuner.$('message').innerHTML = e;
 		});
 	}
 </script>
@@ -80,6 +81,14 @@
     <header id="tuner" class="tuner">
         <div class="container">
         	<canvas width="350" height="350" id="tunerView"></canvas>
+        	<div class="row">
+                <div class="col-lg-12">
+                    <div class="intro-text" id="error" style="display:none">
+                        <span class="name">Error</span>
+                        <span class="skills" id="message"></span>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
