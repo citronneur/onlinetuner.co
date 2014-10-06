@@ -22,6 +22,49 @@
 
 (function(){
 	
+	//All note handle by analyser in Latin representation
+	var NOTE = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
+	
+	//init window with blackman algorithm
+	var blackmanWindow = function(size) {
+		var window = new Float32Array(size);
+		for(var i = 0; i < window.length; i++) {
+			window[i] = 0.42 - 0.5 * Math.cos(2* Math.PI * i / window.length) + 0.08 * Math.cos(4 * Math.PI * i / window.length);
+		}
+		
+		return window;
+	};
+	
+	//init window with hamming algorithm
+	var hammingWindow = function(size) {
+		var window = new Float32Array(size);
+		for(var i = 0; i < window.length; i++) {
+			window[i] = 0.54 - 0.46 * Math.cos(2* Math.PI * i / window.length);
+		}
+		
+		return window;
+	};
+	
+	//compute step from frequency
+	//step is the between La 440Hz (A4)
+	var computeStep = function(frequency) {
+		return 12 * Math.log(frequency / 440.0) / Math.LN2;
+	};
+	
+	//Compute octave from step compute from La 440hz (4th octave)
+	var computeOctave = function(step) {
+		return Math.floor((step - 2) / 12) + 4;
+	};
+	
+	//Compute Note from step compute from La 440hz (A4)
+	var computeNote = function(step) {
+		var idx = Math.round(step) % NOTE.length;
+		if(idx < 0)
+			return NOTE[12 + idx];
+		else
+			return NOTE[idx];
+	};
+	
 	var Analyser = function(controllers, highFrequency, precision) {
 		//max frequency to analyse
 		this.highFrequency = highFrequency || 350.0;
@@ -59,35 +102,12 @@
 		
 		//init window for sound analyse
 		this.window = blackmanWindow(this.precision);
-		
-		//last note
-		this.contextNote = {frequency : 440.0, step : 0, note : "A", octave : 4};
-	};
-	
-	//init window with blackman algorithm
-	var blackmanWindow = function(size) {
-		var window = new Float32Array(size);
-		for(var i = 0; i < window.length; i++) {
-			window[i] = 0.42 - 0.5 * Math.cos(2* Math.PI * i / window.length) + 0.08 * Math.cos(4 * Math.PI * i / window.length);
-		}
-		
-		return window;
-	};
-	
-	//init window with hamming algorithm
-	var hammingWindow = function(size) {
-		var window = new Float32Array(size);
-		for(var i = 0; i < window.length; i++) {
-			window[i] = 0.54 - 0.46 * Math.cos(2* Math.PI * i / window.length);
-		}
-		
-		return window;
 	};
 	
 	Analyser.prototype = {
 			// Init tree analyser
 			// onReady is the ready callback
-			install : function(onReady) {
+			install : function(onReady, onError) {
 				var self = this;
 				
 				OnlineTuner.getUserMedia({audio : true}, function(stream) {
@@ -98,7 +118,7 @@
 					onReady();
 					
 				}, function(e) {
-					alert("Error : " + e);
+					onError(e);
 				});
 			},
 
@@ -126,12 +146,12 @@
 				
 				//update view
 			    for(var i = 0; i < this.controllers.length; i++) {
-					this.controllers[i].notify(this);
+					this.controllers[i].notify(this.getInfo());
 				}
 			},
 			
 			//return error
-			getDeltaHZ : function() {
+			getError : function() {
 				return this.audioContext.sampleRate / this.precision;
 			},
 			
@@ -140,50 +160,27 @@
 				return this.fft.spectrum;
 			},
 			
-			//Return nb half step from A4 note
-			getStep : function(frequency) {
-				return 12 * Math.log(frequency / 440.0) / Math.LN2;
-			},
-			
-			//Compute Note from step
-			//step represent half step from A4 (do 440.0Hz)
-			getNote : function(step) {
-				var note = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
-				var idx = Math.round(step) % note.length;
-				if(idx < 0)
-					return note[12 + idx];
-				else
-					return note[idx];
-			},
-			
-			//Compute octave from step
-			//step represent half step from A4 (la 440Hz)
-			getOctave : function(step) {
-				return Math.floor((step - 2) / 12) + 4;
-			},
-			
 			//Return error of measurement in step
 			getStepError : function(frequency) {
-				return this.getStep(frequency + this.getDeltaHZ()) - this.getStep(frequency);
+				return computeStep(frequency + this.getError()) - computeStep(frequency);
 			},
 			
 			getInfo : function() {
 				//frequencies computed by FFT
-				var frequencies = this.getData().subarray(0, this.highFrequency / this.getDeltaHZ());
+				//Apply lowpass filter directly on fft
+				var frequencies = this.getData().subarray(0, this.highFrequency / this.getError());
 				
 				//Max frequency
-		        var frequency = (frequencies.indexof(frequencies.max()) * this.getDeltaHZ());
+		        var frequency = (frequencies.indexof(frequencies.max()) * this.getError());
 		        
+		        //no sound
 		        if(frequency == 0)
-		        	return this.contextNote;
-		        //step from A4 (la 440hz)
-		        var step = this.getStep(frequency);
+		        	//default note is 440.0
+		        	frequency = 440.0;
+		        	
+		        var step = computeStep(frequency);
 		        
-		        //Note and octave from step
-		        var note = this.getNote(step);
-		        var octave = this.getOctave(step);
-		        
-		        return {frequency : frequency, step : step, note : note, octave : octave};
+		        return {frequency : frequency, step : step, error : this.getError(frequency), stepError : this.getStepError(frequency), note : computeNote(step), octave : computeOctave(step)};
 			}
 	};
 	

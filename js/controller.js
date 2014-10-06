@@ -21,7 +21,30 @@
 //Interface between analyser and widgets
 (function () {
 	
-	//View
+	//Step compute from La 440 Hz
+	var GUITARE_STEP = [-29, -24, -19, -14, -10, -5];
+	//notes of guitare strings
+	var GUITARE_NOTE = ["E", "A", "D", "G", "B", "E"];
+	
+	//compute guitare string and delta from note step (la 440Hz)
+	var computeGuitareString = function(info) {
+		//search nearest note
+		var diff = GUITARE_STEP.map(function(e) {
+			return Math.abs(e - info.step);
+		});
+		
+		var string = diff.indexOf(Math.min.apply(null, diff));
+		
+		//compute error
+		var delta = GUITARE_STEP[string] - info.step;
+		if(Math.abs(delta) - info.stepError < 0) {
+			delta = 0;
+		}
+		
+		return { string : string, note : GUITARE_NOTE[string], delta : delta };
+	};
+	
+	//Controller
 	var Controller = function() {		
 	};
 	
@@ -38,50 +61,16 @@
 	};
 	
 	GuitareTuner.prototype = {
-		// draw a particular array
-		notify : function(analyser) {
-			//step of quitare note
-			var GUITARE_STEP = [-29, -24, -19, -14, -10, -5];
-			var GUITARE_NOTE = ["E", "A", "D", "G", "B", "E"];
+		// draw guitare tubner state
+		notify : function(info) {
+
+			guitareInfo = computeGuitareString(info);
 			
-			//analyser informations
-			var info = analyser.getInfo();
-			
-			//search nearest note
-			var diff = GUITARE_STEP.map(function(e) {
-				return Math.abs(e - info.step);
-			});
-			
-			var index = diff.indexOf(Math.min.apply(null, diff));
-			
-			//compute error
-			var delta = GUITARE_STEP[index] - info.step;
-			if(Math.abs(delta) - analyser.getStepError(info.frequency) < 0) {
-				console.log(analyser.getStepError(info.frequency) + " " + delta);
-				delta = 0;
-			}
-			this.widget.show(- (delta) / 5.0, GUITARE_NOTE[index], "string " + (6 - index), info.note + "" + info.octave + "(" + Math.round(info.frequency) + "Hz)");
-		}
-	};
-	
-	//BarChartView
-	//Frequency chart view
-	var BarChartController = function(widget, maxFrequency) {
-		Controller.call(this);
-		//target of drawing
-		this.widget = widget;
-		//maxFrequency to show
-		this.maxFrequency = maxFrequency;
-	};
-	
-	BarChartController.prototype = {
-		// draw a particular array
-		notify : function(analyser) {
-			var array = analyser.getData().slice(0, this.maxFrequency / analyser.getDeltaHZ());
-			this.widget.show(array);
+			//update associate widget
+			this.widget.show(- (guitareInfo.delta) / 5.0, guitareInfo.note, "string " + guitareInfo.string, info.note + "" + info.octave + "(" + Math.round(info.frequency) + "Hz)");
 		}
 	};
 	
 	//Namespace declaration
-	OnlineTuner.Controller = {GuitareTuner : GuitareTuner, BarChart : BarChartController};
+	OnlineTuner.Controller = {GuitareTuner : GuitareTuner};
 })();
