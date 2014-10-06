@@ -22,9 +22,9 @@
 (function () {
 	
 	//Step compute from La 440 Hz
-	var GUITARE_STEP = [-29, -24, -19, -14, -10, -5];
+	var GUITARE_STEP = [-5, -10, -14, -19, -24, -29];
 	//notes of guitare strings
-	var GUITARE_NOTE = ["E", "A", "D", "G", "B", "E"];
+	var GUITARE_NOTE = ["E", "B", "G", "D", "A", "E"];
 	
 	//compute guitare string and delta from note step (la 440Hz)
 	var computeGuitareString = function(info) {
@@ -41,7 +41,7 @@
 			delta = 0;
 		}
 		
-		return { string : string, note : GUITARE_NOTE[string], delta : delta };
+		return { string : string + 1, note : GUITARE_NOTE[string], delta : delta };
 	};
 	
 	//Controller
