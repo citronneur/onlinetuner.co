@@ -67,7 +67,7 @@
 	
 	var Analyser = function(controllers, highFrequency, precision) {
 		//max frequency to analyse
-		this.highFrequency = highFrequency || 800.0;
+		this.highFrequency = highFrequency || 350.0;
 		
 		//precision of computation
 		this.precision = precision || (4 * 16384);
@@ -172,12 +172,11 @@
 			getInfo : function() {
 				//frequencies computed by FFT
 				//Apply lowpass filter directly on fft
-				//var frequencies = this.getData().subarray(0, this.highFrequency / this.getError());
+				var frequencies = this.getData().subarray(0, this.highFrequency / this.getError());
 				
 				//Max frequency
-		        //var frequency = (frequencies.indexof(frequencies.max()) * this.getError());
-				var frequency = (this.getData().indexof(this.getData().max()) * this.getError());
-		        
+		        var frequency = (frequencies.indexof(frequencies.max()) * this.getError());
+				
 		        //no sound
 		        if(frequency == 0)
 		        	//default note is 440.0
@@ -188,10 +187,11 @@
 		        return {frequency : frequency, step : step, error : this.getError(frequency), stepError : this.getStepError(frequency), note : computeNote(step), octave : computeOctave(step)};
 			},
 			
-			//Frequency linear attenuation from 0 to high frequency
+			//Frequency attenuation from 0 to high frequency
 			//try to attenuate high frequency from microphone
 			attenuation : function(i) {
-				return -1 * i * this.getError() / this.highFrequency + 1;
+				//return -1 * i * this.getError() / this.highFrequency + 1;
+				return Math.exp(-1 * 2 * i * this.getError() / this.highFrequency);
 			}
 	};
 	
