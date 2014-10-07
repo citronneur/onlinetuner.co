@@ -29,7 +29,7 @@
 	var blackmanWindow = function(size) {
 		var window = new Float32Array(size);
 		for(var i = 0; i < window.length; i++) {
-			window[i] = 0.42 - 0.5 * Math.cos(2* Math.PI * i / window.length) + 0.08 * Math.cos(4 * Math.PI * i / window.length);
+			window[i] = 0.42 - 0.5 * Math.cos(2* Math.PI * i / (window.length - 1)) + 0.08 * Math.cos(4 * Math.PI * i / (window.length - 1));
 		}
 		
 		return window;
@@ -53,7 +53,7 @@
 	
 	//Compute octave from step compute from La 440hz (4th octave)
 	var computeOctave = function(step) {
-		return Math.floor((step - 2) / 12) + 4;
+		return Math.sign(step - 2) * Math.floor(Math.abs(step - 2) / 12) + 4;
 	};
 	
 	//Compute Note from step compute from La 440hz (A4)
@@ -67,7 +67,7 @@
 	
 	var Analyser = function(controllers, highFrequency, precision) {
 		//max frequency to analyse
-		this.highFrequency = highFrequency || 350.0;
+		this.highFrequency = highFrequency || 800.0;
 		
 		//precision of computation
 		this.precision = precision || (4 * 16384);
@@ -136,14 +136,6 @@
 				this.inputStream.set(this.inputStream.subarray(this.precision));
 				this.inputStream.set(inputData, this.inputStream.length - inputData.length);
 				
-				//normalize
-				var max = this.inputStream.max();
-				if (max > 0) {
-					this.inputStream.select(function(e) {
-						return e/max;
-					});
-				}
-				
 				//apply window
 				for(var i = 0; i < inputData.length; i++) {
 					this.inputStream[i] *= this.window[i];
@@ -151,6 +143,10 @@
 				
 				//compute fft
 				this.fft.forward(this.inputStream);
+				
+				for (var i = 0; i < this.fft.spectrum.length; i++) {
+					this.fft.spectrum[i] *= this.attenuation(i);
+				}
 				
 				//update view
 			    for(var i = 0; i < this.controllers.length; i++) {
@@ -176,10 +172,11 @@
 			getInfo : function() {
 				//frequencies computed by FFT
 				//Apply lowpass filter directly on fft
-				var frequencies = this.getData().subarray(0, this.highFrequency / this.getError());
+				//var frequencies = this.getData().subarray(0, this.highFrequency / this.getError());
 				
 				//Max frequency
-		        var frequency = (frequencies.indexof(frequencies.max()) * this.getError());
+		        //var frequency = (frequencies.indexof(frequencies.max()) * this.getError());
+				var frequency = (this.getData().indexof(this.getData().max()) * this.getError());
 		        
 		        //no sound
 		        if(frequency == 0)
@@ -189,6 +186,12 @@
 		        var step = computeStep(frequency);
 		        
 		        return {frequency : frequency, step : step, error : this.getError(frequency), stepError : this.getStepError(frequency), note : computeNote(step), octave : computeOctave(step)};
+			},
+			
+			//Frequency linear attenuation from 0 to high frequency
+			//try to attenuate high frequency from microphone
+			attenuation : function(i) {
+				return -1 * i * this.getError() / this.highFrequency + 1;
 			}
 	};
 	

@@ -65,19 +65,19 @@
 				this.ctx.font = '70pt Arial';
 				this.ctx.textAlign = 'center';
 				this.ctx.fillStyle = this.fontColor;
-				this.ctx.fillText(note, this.canvas.width / 2, this.canvas.height / 2 + 35);
+				this.ctx.fillText(note, this.canvas.width / 2, this.canvas.height / 2 + 15);
 				
 				//information 1
 				this.ctx.font = '20pt Arial';
 				this.ctx.textAlign = 'center';
 				this.ctx.fillStyle = this.fontColor;
-				this.ctx.fillText(info1, this.canvas.width / 2, this.canvas.height / 2 + 75);
+				this.ctx.fillText(info1, this.canvas.width / 2, this.canvas.height / 2 + 55);
 				
 				//information 1
 				this.ctx.font = '15pt Arial';
 				this.ctx.textAlign = 'center';
 				this.ctx.fillStyle = this.fontColor;
-				this.ctx.fillText(info2, this.canvas.width / 2, this.canvas.height / 2 + 95);
+				this.ctx.fillText(info2, this.canvas.width / 2, this.canvas.height / 2 + 85);
 			
 			}
 	};
