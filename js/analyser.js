@@ -53,7 +53,7 @@
 	
 	//Compute octave from step compute from La 440hz (4th octave)
 	var computeOctave = function(step) {
-		return Math.sign(step - 2) * Math.floor(Math.abs(step - 2) / 12) + 4;
+		return ((step - 2) / Math.abs(step - 2)) * Math.floor(Math.abs(step - 2) / 12) + 4;
 	};
 	
 	//Compute Note from step compute from La 440hz (A4)
