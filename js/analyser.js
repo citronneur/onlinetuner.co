@@ -144,8 +144,9 @@
 				//compute fft
 				this.fft.forward(this.inputStream);
 				
+				//compensate micro response
 				for (var i = 0; i < this.fft.spectrum.length; i++) {
-					this.fft.spectrum[i] *= this.attenuation(i);
+					this.fft.spectrum[i] *= this.microResponse(i);
 				}
 				
 				//update view
@@ -189,9 +190,13 @@
 			
 			//Frequency attenuation from 0 to high frequency
 			//try to attenuate high frequency from microphone
-			attenuation : function(i) {
-				//return -1 * i * this.getError() / this.highFrequency + 1;
-				return Math.exp(-1 * 2 * i * this.getError() / this.highFrequency);
+			microResponse : function(i) {
+				if (i * this.getError() < 200.0) {
+					return - 1 * 0.045 * this.getError() * i + 10;
+				}
+				else {
+					return 1.0;
+				}
 			}
 	};
 	
