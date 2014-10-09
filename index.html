@@ -9,17 +9,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>OnlineTuner.co - Tune Your Guitare in HTML5</title>
+    <title>OnlineTuner.co - Guitar Tuner in HTML5</title>
 
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/freelancer.css" rel="stylesheet">
     
-    <script type="text/javascript" src="/js/onlinetuner.js"></script>
-	<script type="text/javascript" src="/js/analyser.js"></script>
-	<script type="text/javascript" src="/js/controller.js"></script>
-	<script type="text/javascript" src="/js/widget.js"></script>
-	<script type="text/javascript" src="/js/fft.js"></script>
+    <script type="text/javascript" src="/js/onlinetuner.min.js"></script>
 	<script type="text/javascript">
 	function start() {
 
@@ -28,8 +24,7 @@
 			new OnlineTuner.Controller.GuitareTuner(new OnlineTuner.Widget.CircleWidget(OnlineTuner.$('tunerView'), '#ffffff', '#2c3e50', '#18bc9c', '#2c3e50'))
 		];
 		
-		//install fft capture
-		//800 Hz for guitare
+		//install analyser
 		var analyser = new OnlineTuner.Analyser(views);
 		
 		analyser.install(function() {
@@ -128,7 +123,7 @@
                     </div>
                     <div class="footer-col col-md-4">
                         <h3>How does it works</h3>
-                        <p>OnlineTuner.co use new <a href="https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html">Web Audio API</a> to capture sound. Normalize signal. Apply BlackMan window on normalize signal. Compute the FFT throught <a href="https://github.com/corbanbrook/dsp.js">dsp.js</a>.</p>
+                        <p>OnlineTuner.co use new <a href="https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html">Web Audio API</a> to capture sound. Apply BlackMan window on input signal. Compute the FFT throught <a href="https://github.com/corbanbrook/dsp.js">dsp.js</a>. Apply microphone response correction.</p>
                     </div>
                     <div class="footer-col col-md-4">
                         <h3>Theme</h3>

@@ -193,7 +193,7 @@
 			//that need to be compensate.
 			microResponse : function(i) {
 				if (i * this.getError() < this.microphoneResponseFrequency) {
-					return - 1 * 0.06 * this.getError() * i + 10;
+					return - 1 * 0.06 * this.getError() * i + 13;
 				}
 				else {
 					return 1.0;

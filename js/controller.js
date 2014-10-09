@@ -64,7 +64,7 @@
 		// draw guitare tubner state
 		notify : function(info) {
 
-			guitareInfo = computeGuitareString(info);
+			var guitareInfo = computeGuitareString(info);
 			
 			//update associate widget
 			this.widget.show(- (guitareInfo.delta) / 5.0, guitareInfo.note, "string " + guitareInfo.string, info.note + "" + info.octave + "(" + Math.round(info.frequency) + "Hz)");
