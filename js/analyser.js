@@ -65,7 +65,7 @@
 			return NOTE[idx];
 	};
 	
-	var Analyser = function(controllers, highFrequency, precision) {
+	var Analyser = function(controllers, precision, highFrequency) {
 		//max frequency to analyse
 		this.highFrequency = highFrequency || 350.0;
 		
@@ -188,11 +188,12 @@
 		        return {frequency : frequency, step : step, error : this.getError(frequency), stepError : this.getStepError(frequency), note : computeNote(step), octave : computeOctave(step)};
 			},
 			
-			//Frequency attenuation from 0 to high frequency
-			//try to attenuate high frequency from microphone
+			//microphone response is not linear
+			//for low frequency there are an attenuation
+			//that need to be compensate.
 			microResponse : function(i) {
-				if (i * this.getError() < 200.0) {
-					return - 1 * 0.045 * this.getError() * i + 10;
+				if (i * this.getError() < this.microphoneResponseFrequency) {
+					return - 1 * 0.06 * this.getError() * i + 10;
 				}
 				else {
 					return 1.0;
