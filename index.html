@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>OnlineTuner.co - Guitar Tuner in HTML5</title>
+
 
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -38,40 +38,6 @@
 </head>
 
 <body id="page-top" class="index" onload="start()">
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#page-top">OnlineTuner.co</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="hidden">
-                        <a href="#page-top"></a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#tuner">Tuner</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#about">About</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container-fluid -->
-    </nav>
-
     <!-- Tuner Header -->
     <header id="tuner" class="tuner">
         <div class="container">
@@ -86,62 +52,6 @@
             <canvas width="300" height="300" id="tunerView"></canvas>
         </div>
     </header>
-
-    <!-- About Section -->
-    <section class="success" id="about">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>About</h2>
-                    <hr>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-lg-offset-2">
-                    <p>OnlineTuner.co is a free tuner for your guitar. It uses only web technologies (Web Audio API and canvas).</p>
-                </div>
-                <div class="col-lg-4">
-                    <p>OnlineTuner is powered by beautiful open source technologies. Enjoy what lots of people have done with passion.</a></p>
-                </div>
-                <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <a href="https://github.com/citronneur/onlinetuner.co" class="btn btn-lg btn-outline">
-                        <i class="fa fa-download"></i> View Source Code
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="text-center">
-        <div class="footer-above">
-            <div class="container">
-                <div class="row">
-                    <div class="footer-col col-md-4">
-                        <h3>Bugs</h3>
-                        <p>Please report any bugs <a href="https://github.com/citronneur/onlinetuner.co/issues/new">here</a></p>
-                    </div>
-                    <div class="footer-col col-md-4">
-                        <h3>How does it works</h3>
-                        <p>OnlineTuner.co use new <a href="https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html">Web Audio API</a> to capture sound, applies BlackMan window on input signal, computes the FFT through <a href="https://github.com/corbanbrook/dsp.js">dsp.js</a> and applies microphone response correction.</p>
-                    </div>
-                    <div class="footer-col col-md-4">
-                        <h3>Theme</h3>
-                        <p>Freelancer is a free to use, open source Bootstrap theme created by <a href="http://startbootstrap.com">Start Bootstrap</a>.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="footer-below">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        OnlineTuner.co 2014
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
 </body>
 
 </html>
