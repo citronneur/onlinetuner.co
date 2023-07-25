@@ -1,4 +1,4 @@
-[www.onlinetuner.co](http://www.onlinetuner.co)
+onlinetuner.co
 ==============
 
 Guitar Tuner in HTML5.
@@ -6,7 +6,6 @@ Guitar Tuner in HTML5.
 onlinetuner.co is a web site that use WebAudio API to capture Guitar sound, analyse it and determine the difference from nearest string.
 Algorithm can be apply for other instruments or other type of tuning.
 
-Please visit website : [www.onlinetuner.co](http://www.onlinetuner.co)
 
 How does it works
 -----------------
